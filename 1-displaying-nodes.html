@@ -40,10 +40,10 @@
     var data = [];
     for (var i = 0; i < str.length; i++) {
       data.push({
-        id: id[i],
-        group: group[i],
-        label: label[i],
-        level: level[i]
+        id: str[i].id,
+        group: str[i].group,
+        label: str[i].label,
+        level: str[i].level
       });
       return data;
     }
