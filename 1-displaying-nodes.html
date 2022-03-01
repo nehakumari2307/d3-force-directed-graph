@@ -41,7 +41,7 @@
         id: str[i].id,
         target: str[i].target,
         source: str[i].source,
-        strength: parseInt(str[i].strength)
+        strength: parseFloat(str[i].strength)
       });
     }
     return link_data;
@@ -75,7 +75,7 @@
       .force('center', d3.forceCenter(width / 2, height / 2))
 
     function getNodeColor(node) {
-      return node.level === 1 ? 'red' : 'gray'
+      return node.level === 1 ? 'black' : 'gray'
     }
 
     var linkElements = svg.append("g")
