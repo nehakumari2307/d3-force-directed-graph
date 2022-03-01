@@ -67,7 +67,7 @@
   d3.csv("./csv_data/node_data.csv", function (error, data) {
 
     // data = JSON.parse(data)
-    const nodes = csvToArray(text);
+    const nodes = csvToArray(data);
     console.log(JSON.stringify(nodes));
 
     // var nodes = pack.nodes(data);
