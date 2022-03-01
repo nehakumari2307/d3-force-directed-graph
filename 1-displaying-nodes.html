@@ -19,43 +19,72 @@
     { id: "pike", group: 2, label: "Pikes", level: 2 }
   ]
 
-  var width = window.innerWidth
-  var height = window.innerHeight
-
-  var svg = d3.select('svg')
-  svg.attr('width', width).attr('height', height)
-
-  // simulation setup with all forces
-  var simulation = d3
-    .forceSimulation()
-    .force('charge', d3.forceManyBody().strength(-120))
-    .force('center', d3.forceCenter(width / 2, height / 2))
 
 
-  function getNodeColor(node) {
-    return node.level === 1 ? 'red' : 'gray'
-  }
-
-  function csvToArray(str) {
-    var data = [];
+  function csvToNode(str) {
+    var node_data = [];
     for (var i = 0; i < str.length; i++) {
-      data.push({
+      node_data.push({
         id: str[i].id,
         group: str[i].group,
         label: str[i].label,
         level: str[i].level
       });
     }
-    return data;
+    return node_data;
+  };
+
+  function csvToLink(str) {
+    var link_data = [];
+    for (var i = 0; i < str.length; i++) {
+      link_data.push({
+        id: str[i].id,
+        target: str[i].target,
+        source: str[i].source,
+        strength: str[i].strength
+      });
+    }
+    return link_data;
   };
 
   d3.csv("./csv_data/node_data.csv", function (error, data) {
 
-    // data = JSON.parse(data)
-    const nodes = csvToArray(data);
-    console.log(nodes);
 
-    // var nodes = pack.nodes(data);
+    // data = JSON.parse(data)
+    const nodes = csvToNode(data);
+    const links = csvToLink(data);
+    console.log(nodes);
+    console.log(links);
+
+    var width = window.innerWidth
+    var height = window.innerHeight
+
+    var svg = d3.select('svg')
+    svg.attr('width', width).attr('height', height)
+
+    var linkForce = d3
+      .forceLink()
+      .id(function (link) { return link.id })
+      .strength(function (link) { return link.strength })
+
+    // simulation setup with all forces
+    var simulation = d3
+      .forceSimulation()
+      .force('link', linkForce)
+      .force('charge', d3.forceManyBody().strength(-120))
+      .force('center', d3.forceCenter(width / 2, height / 2))
+
+    function getNodeColor(node) {
+      return node.level === 1 ? 'red' : 'gray'
+    }
+
+    var linkElements = svg.append("g")
+      .attr("class", "links")
+      .selectAll("line")
+      .data(links)
+      .enter().append("line")
+      .attr("stroke-width", 1)
+      .attr("stroke", "rgba(50, 50, 50, 0.2)")
 
 
     var nodeElements = svg.append("g")
@@ -83,6 +112,12 @@
       textElements
         .attr('x', function (node) { return node.x })
         .attr('y', function (node) { return node.y })
+      linkElements
+        .attr('x1', function (link) { return link.source.x })
+        .attr('y1', function (link) { return link.source.y })
+        .attr('x2', function (link) { return link.target.x })
+        .attr('y2', function (link) { return link.target.y })
     })
   })
+  simulation.force("link").links(links)
 </script>
