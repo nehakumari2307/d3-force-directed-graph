@@ -112,23 +112,9 @@
 
     function getClickedNodeColor(node, neighbors) {
       if (Array.isArray(neighbors) && neighbors.indexOf(node.id) > -1) {
-        return node.level === 1 ? 'blue' : 'green'
+        return 'lightblue'
       }
-
-      return node.level === 1 ? 'red' : 'gray'
-    }
-
-    function getClickedLinkColor(node, link) {
-      return isNeighborLink(node, link) ? 'green' : '#E5E5E5'
-    }
-
-    function getClickedTextColor(node, neighbors) {
-      return Array.isArray(neighbors) && neighbors.indexOf(node.id) > -1 ? 'green' : 'black'
-    }
-
-
-    function getNodeColor(node) {
-      if (node.level === 0) {
+      else if (node.level === 0) {
         return 'lightblack';
       } else if (node.level === 1) {
         return 'gray';
@@ -137,20 +123,45 @@
       }
     }
 
+    function getClickedLinkColor(node, link) {
+      return isNeighborLink(node, link) ? '#E5E5E5' : 'black'
+    }
+
+    function getClickedNodeSize(node, neighbors) {
+      if (Array.isArray(neighbors) && neighbors.indexOf(node.id) > -1) {
+        return (node.strength * 70) + 1.0;
+      }
+      else {
+        return (node.strength * 50) + 1.0;
+      }
+    }
+
+
+    // function getNodeColor(node) {
+    //   if (node.level === 0) {
+    //     return 'lightblack';
+    //   } else if (node.level === 1) {
+    //     return 'gray';
+    //   } else {
+    //     return 'lightgray';
+    //   }
+    // }
+
     function getTextColor(node) {
       return node.level === 0 ? 'white' : 'black'
     }
 
-    function getNodeStrength(node) {
-      return (node.strength * 50) + 1.0;
-    }
+    // function getNodeStrength(node) {
+    //   return (node.strength * 50) + 1.0;
+    // }
 
     function selectNode(selectedNode) {
       var neighbors = getNeighbors(selectedNode)
 
       // modify the styles to highlight selected nodes
       nodeElements.attr('fill', function (node) { return getClickedNodeColor(node, neighbors) })
-      textElements.attr('fill', function (node) { return getClickedTextColor(node, neighbors) })
+      nodeElements.attr('r', function (node) { return getClickedNodeSize(node.neighbors) })
+      // textElements.attr('fill', function (node) { return getTextColor(node, neighbors) })
       linkElements.attr('stroke', function (link) { return getClickedLinkColor(selectedNode, link) })
     }
 
@@ -168,7 +179,7 @@
       .selectAll("circle")
       .data(nodes)
       .enter().append("circle")
-      .attr("r", getNodeStrength)
+      .attr("r", getClickedNodeSize)
       .attr("stroke-width", strokeWidth)
       // .attr("fill", getNodeColor)
       .attr("fill", getClickedNodeColor)
@@ -185,7 +196,7 @@
       .attr("class", "nodetext")
       .attr('alignment-baseline', 'middle')
       .attr("font-size", 18)
-    // .style("fill", getTextColor)
+      .style("fill", getTextColor)
     // .attr("dx", 15)
     // .attr("dy", 4)
 
