@@ -72,7 +72,7 @@
     var simulation = d3
       .forceSimulation()
       .force('link', linkForce)
-      .force('charge', d3.forceManyBody().strength(-750))
+      .force('charge', d3.forceManyBody().strength(-1000))
       .force('center', d3.forceCenter(width / 2, height / 2))
 
     const draginteraction = d3.drag().on('drag', (event, node) => {
@@ -90,7 +90,10 @@
       } else {
         return 'lightgray';
       }
-      // return node.level === 1 ? 'black' : 'gray'
+    }
+
+    function getTextColor(node) {
+      return node.level === 0 ? 'white' : 'black'
     }
 
     function getNodeStrength(node) {
@@ -125,7 +128,8 @@
       .attr("text-anchor", "middle")
       .attr("class", "nodetext")
       .attr('alignment-baseline', 'middle')
-      .attr("font-size", 15)
+      .attr("font-size", 18)
+      .attr("color", getTextColor)
     // .attr("dx", 15)
     // .attr("dy", 4)
 
