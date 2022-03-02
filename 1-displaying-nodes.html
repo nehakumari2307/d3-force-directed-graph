@@ -32,6 +32,41 @@
     return link_data;
   };
 
+  //for hghlighting associated nodes and links when clicked on any node
+
+  function getNeighbors(node) {
+    return links.reduce(function (neighbors, link) {
+      if (link.target.id === node.id) {
+        neighbors.push(link.source.id)
+      } else if (link.source.id === node.id) {
+        neighbors.push(link.target.id)
+      }
+      return neighbors
+    },
+      [node.id]
+    )
+  }
+
+  function isNeighborLink(node, link) {
+    return link.target.id === node.id || link.source.id === node.id
+  }
+
+  function getClickedNodeColor(node, neighbors) {
+    if (Array.isArray(neighbors) && neighbors.indexOf(node.id) > -1) {
+      return node.level === 1 ? 'blue' : 'green'
+    }
+
+    return node.level === 1 ? 'red' : 'gray'
+  }
+
+  function getClickedLinkColor(node, link) {
+    return isNeighborLink(node, link) ? 'green' : '#E5E5E5'
+  }
+
+  function getClickedTextColor(node, neighbors) {
+    return Array.isArray(neighbors) && neighbors.indexOf(node.id) > -1 ? 'green' : 'black'
+  }
+
   d3.csv("./csv_data/node_data.csv", function (error, data) {
 
     const nodes = csvToNode(data);
@@ -52,7 +87,7 @@
     var svg = d3.select("#interaction").append("svg")
       .attr("height", height)
       .attr("width", width)
-      .attr("style", "outline: thin solid black")
+      .attr("style", "outline: thick solid black")
       .append("g")
       .attr("transform", "translate(0,0)")
 
@@ -68,12 +103,27 @@
       .force('charge', d3.forceManyBody().strength(-1000))
       .force('center', d3.forceCenter(width / 2, height / 2))
 
-    const draginteraction = d3.drag().on('drag', (event, node) => {
-      node.fx = event.x; //fx& fy is used to fix new position of the nodes when dragged
-      node.fy = event.y;
-      simulation.alpha(1);
-      simulation.restart();
-    });
+    var dragDrop = d3.drag().on('start', function (node) {
+      node.fx = node.x
+      node.fy = node.y
+    }).on('drag', function (node) {
+      simulation.alphaTarget(0.7).restart()
+      node.fx = d3.event.x
+      node.fy = d3.event.y
+    }).on('end', function (node) {
+      if (!d3.event.active) {
+        simulation.alphaTarget(0)
+      }
+      node.fx = null
+      node.fy = null
+    })
+
+    // const draginteraction = d3.drag().on('drag', (event, node) => {
+    //   node.fx = event.x; //fx& fy is used to fix new position of the nodes when dragged
+    //   node.fy = event.y;
+    //   simulation.alpha(1);
+    //   simulation.restart();
+    // });
 
     function getNodeColor(node) {
       if (node.level === 0) {
@@ -93,6 +143,15 @@
       return (node.strength * 50) + 1.0;
     }
 
+    function selectNode(selectedNode) {
+      var neighbors = getNeighbors(selectedNode)
+
+      // modify the styles to highlight selected nodes
+      nodeElements.attr('fill', function (node) { return getClickedNodeColor(node, neighbors) })
+      textElements.attr('fill', function (node) { return getClickedTextColor(node, neighbors) })
+      linkElements.attr('stroke', function (link) { return getClickedLinkColor(selectedNode, link) })
+    }
+
     var linkElements = svg.append("g")
       .attr("class", "links")
       .selectAll("line")
@@ -109,8 +168,10 @@
       .enter().append("circle")
       .attr("r", getNodeStrength)
       .attr("stroke-width", strokeWidth)
-      .attr("fill", getNodeColor)
-      .call(draginteraction);
+      // .attr("fill", getNodeColor)
+      .attr("fill", getClickedNodeColor)
+      .call(dragDrop)
+      .on('click', selectNode)
 
     var textElements = svg.append("g")
       .attr("class", "texts")
@@ -122,7 +183,7 @@
       .attr("class", "nodetext")
       .attr('alignment-baseline', 'middle')
       .attr("font-size", 18)
-      .style("fill", getTextColor)
+    // .style("fill", getTextColor)
     // .attr("dx", 15)
     // .attr("dy", 4)
 
