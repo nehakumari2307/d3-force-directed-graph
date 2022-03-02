@@ -136,6 +136,7 @@
       //   console.log("node strength", node.strength);
       //   return (node.strength * 50) + 1.0;
       // }
+      console.log("node on click is", node);
       console.log("node strength", node.strength);
       return Array.isArray(neighbors) && neighbors.indexOf(node.id) > -1 ? (node.strength * 70) + 1.0 : (node.strength * 50) + 1.0
 
