@@ -44,7 +44,7 @@
 
     var width = 800;
     var height = 500;
-    var strokeWidth = 2;
+    var strokeWidth = 1;
 
     // var svg = d3.select('svg')
     // svg.attr('width', width).attr('height', height)
@@ -52,9 +52,7 @@
     var svg = d3.select("#interaction").append("svg")
       .attr("height", height)
       .attr("width", width)
-      .attr("stroke", "black")
-      .attr("stroke-width", strokeWidth)
-      .attr("fill", "none")
+      .attr("style", "outline: thin solid black")
       .append("g")
       .attr("transform", "translate(0,0)")
 
