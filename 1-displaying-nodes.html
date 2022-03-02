@@ -28,7 +28,8 @@
         id: str[i].id,
         group: parseInt(str[i].group),
         label: str[i].label,
-        level: parseInt(str[i].level)
+        level: parseInt(str[i].level),
+        strength: parseFloat(str[i].strength)
       });
     }
     return node_data;
