@@ -44,19 +44,10 @@
 
     const nodes = csvToNode(data);
     const links = csvToLink(data);
-    console.log(nodes);
-    console.log(links);
-
-    // var width = window.innerWidth
-    // var height = window.innerHeight
 
     var width = 800;
-    var height = 800;
+    var height = 600;
     var strokeWidth = 1;
-
-
-    // var svg = d3.select('svg')
-    // svg.attr('width', width).attr('height', height)
 
     var linkForce = d3
       .forceLink()
@@ -94,12 +85,12 @@
     // .call(zoom_handler)
     // .call(zoom_handler.transform, d3.zoomIdentity.translate(200, 150).scale(0.2));
 
-    var zoom_handler = d3.zoom().on("zoom", zoom_actions);
-    zoom_handler(svg);
+    // var zoom_handler = d3.zoom().on("zoom", zoom_actions);
+    // zoom_handler(svg);
 
-    function zoom_actions() {
-      g.attr("transform", d3.event.transform)
-    }
+    // function zoom_actions() {
+    //   g.attr("transform", d3.event.transform)
+    // }
 
     // const draginteraction = d3.drag().on('drag', (event, node) => {
     //   node.fx = event.x; //fx& fy is used to fix new position of the nodes when dragged
@@ -141,42 +132,17 @@
     }
 
     function getClickedLinkColor(node, link) {
-      return isNeighborLink(node, link) ? '#E5E5E5' : 'black'
+      return isNeighborLink(node, link) ? 'gray' : 'black'
     }
 
     function getClickedNodeSize(node, neighbors) {
-      // if (Array.isArray(neighbors) && neighbors.indexOf(node.id) > -1) {
-      //   console.log("node strength", node.strength);
-      //   return (node.strength * 70) + 1.0;
-      // }
-      // else {
-      //   console.log("node strength", node.strength);
-      //   return (node.strength * 50) + 1.0;
-      // }
-      console.log("node on click is", node);
-      console.log("node strength", node.strength);
       return Array.isArray(neighbors) && neighbors.indexOf(node.id) > -1 ? (node.strength * 70) + 1.0 : (node.strength * 50) + 1.0
 
     }
 
-
-    // function getNodeColor(node) {
-    //   if (node.level === 0) {
-    //     return 'lightblack';
-    //   } else if (node.level === 1) {
-    //     return 'gray';
-    //   } else {
-    //     return 'lightgray';
-    //   }
-    // }
-
     function getTextColor(node) {
       return node.level === 0 ? 'white' : 'black'
     }
-
-    // function getNodeStrength(node) {
-    //   return (node.strength * 50) + 1.0;
-    // }
 
     function selectNode(selectedNode) {
       var neighbors = getNeighbors(selectedNode)
@@ -204,7 +170,6 @@
       .enter().append("circle")
       .attr("r", getClickedNodeSize)
       .attr("stroke-width", strokeWidth)
-      // .attr("fill", getNodeColor)
       .attr("fill", getClickedNodeColor)
       .call(dragDrop)
       .on('click', selectNode)
@@ -220,8 +185,6 @@
       .attr('alignment-baseline', 'middle')
       .attr("font-size", 18)
       .style("fill", getTextColor)
-    // .attr("dx", 15)
-    // .attr("dy", 4)
 
     simulation.nodes(nodes).on('tick', () => {
       nodeElements
