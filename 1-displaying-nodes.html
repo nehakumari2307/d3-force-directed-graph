@@ -129,9 +129,11 @@
 
     function getClickedNodeSize(node, neighbors) {
       if (Array.isArray(neighbors) && neighbors.indexOf(node.id) > -1) {
+        console.log("node strength", node.strength);
         return (node.strength * 70) + 1.0;
       }
       else {
+        console.log("node strength", node.strength);
         return (node.strength * 50) + 1.0;
       }
     }
