@@ -166,7 +166,7 @@
 
       // modify the styles to highlight selected nodes
       nodeElements.attr('fill', function (node) { return getClickedNodeColor(node, neighbors) })
-      nodeElements.attr('r', function (node) { return getClickedNodeSize(node.neighbors) })
+      nodeElements.attr('r', function (node) { return getClickedNodeSize(node, neighbors) })
       // textElements.attr('fill', function (node) { return getTextColor(node, neighbors) })
       linkElements.attr('stroke', function (link) { return getClickedLinkColor(selectedNode, link) })
     }
