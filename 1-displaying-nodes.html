@@ -216,12 +216,13 @@
       .style("fill", getTextColor)
 
     var tooltip = d3
-      .select("body")
+      .select("#interaction")
       .append("div") // the tooltip always "exists" as its own html div, even when not visible
       .style("position", "absolute") // the absolute position is necessary so that we can manually define its position later
       .style("visibility", "hidden") // hide it from default at the start so it only appears on hover
       .style("background-color", "white")
       .attr("class", "tooltip")
+      .data(nodes)
 
 
     simulation.nodes(nodes).on('tick', () => {
