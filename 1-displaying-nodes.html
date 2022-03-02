@@ -1,5 +1,12 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
+
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> -->
+
+</html>
+
 <div id="interaction" width="1000" height="1000" style="text-align: center"></div>
 
 <script src="https://d3js.org/d3.v4.min.js"></script>
@@ -44,8 +51,9 @@
     // var height = window.innerHeight
 
     var width = 800;
-    var height = 500;
+    var height = 800;
     var strokeWidth = 1;
+    var zoom_handler = d3.zoom().on("zoom", zoom_actions);
 
     // var svg = d3.select('svg')
     // svg.attr('width', width).attr('height', height)
@@ -56,6 +64,9 @@
       .attr("style", "outline: thick solid black")
       .append("g")
       .attr("transform", "translate(0,0)")
+      .call(zoom_handler)
+      .call(zoom_handler.transform, d3.zoomIdentity.translate(200, 150).scale(0.2));
+
 
     var linkForce = d3
       .forceLink()
@@ -142,7 +153,9 @@
 
     }
 
-
+    function zoom_actions() {
+      g.attr("transform", d3.event.transform)
+    }
     // function getNodeColor(node) {
     //   if (node.level === 0) {
     //     return 'lightblack';
