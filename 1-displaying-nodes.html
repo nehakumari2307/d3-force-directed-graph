@@ -4,6 +4,15 @@
 <html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!-- <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> -->
+<style type="text/css">
+  .tooltip {
+    fill: white;
+    font-family: sans-serif;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid grey;
+  }
+</style>
 
 </html>
 
@@ -46,7 +55,7 @@
     const links = csvToLink(data);
 
     var width = 800;
-    var height = 600;
+    var height = 500;
     var strokeWidth = 1;
 
     var linkForce = d3
@@ -82,6 +91,7 @@
       .attr("style", "outline: thick solid black")
       .append("g")
       .attr("transform", "translate(0,0)")
+
     // .call(zoom_handler)
     // .call(zoom_handler.transform, d3.zoomIdentity.translate(200, 150).scale(0.2));
 
@@ -154,6 +164,21 @@
       linkElements.attr('stroke', function (link) { return getClickedLinkColor(selectedNode, link) })
     }
 
+    function tooltip_in(event, d) { // pass event and d to this function so that it can access d for our data
+      return tooltip
+        .html("<h4>" + d.id + "</h4>") // add an html element with a header tag containing the name of the node.  This line is where you would add additional information like: "<h4>" + d.name + "</h4></br><p>" + d.type + "</p>"  Note the quote marks, pluses and </br>--these are necessary for javascript to put all the data and strings within quotes together properly.  Any text needs to be all one line in .html() here
+        .style("visibility", "visible") // make the tooltip visible on hover
+        .style("top", event.pageY + "px") // position the tooltip with its top at the same pixel location as the mouse on the screen
+        .style("left", event.pageX + "px"); // position the tooltip just to the right of the mouse location
+    }
+
+    function tooltip_out() {
+      return tooltip
+        .transition()
+        .duration(50) // give the hide behavior a 50 milisecond delay so that it doesn't jump around as the network moves
+        .style("visibility", "hidden"); // hide the tooltip when the mouse stops hovering
+    }
+
     var linkElements = svg.append("g")
       .attr("class", "links")
       .selectAll("line")
@@ -173,6 +198,8 @@
       .attr("fill", getClickedNodeColor)
       .call(dragDrop)
       .on('click', selectNode)
+      .on("mouseover", tooltip_in) // when the mouse hovers a node, call the tooltip_in function to create the tooltip
+      .on("mouseout", tooltip_out) // when the mouse stops hovering a node, call the tooltip_out function to get rid of the tooltip
 
     var textElements = svg.append("g")
       .attr("class", "texts")
@@ -185,6 +212,15 @@
       .attr('alignment-baseline', 'middle')
       .attr("font-size", 18)
       .style("fill", getTextColor)
+
+    var tooltip = d3
+      .select("body")
+      .append("div") // the tooltip always "exists" as its own html div, even when not visible
+      .style("position", "absolute") // the absolute position is necessary so that we can manually define its position later
+      .style("visibility", "hidden") // hide it from default at the start so it only appears on hover
+      .style("background-color", "white")
+      .attr("class", "tooltip")
+
 
     simulation.nodes(nodes).on('tick', () => {
       nodeElements
