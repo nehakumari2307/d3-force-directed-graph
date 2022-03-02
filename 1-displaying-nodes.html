@@ -75,7 +75,18 @@
       .force('center', d3.forceCenter(width / 2, height / 2))
 
     function getNodeColor(node) {
-      return node.level === 1 ? 'black' : 'gray'
+      if (node.level === 0) {
+        return 'black';
+      } else if (node.level === 1) {
+        return 'gray';
+      } else {
+        return 'lightgray';
+      }
+      // return node.level === 1 ? 'black' : 'gray'
+    }
+
+    function getNodeStrength(node) {
+      return (node.strength * 50) + 1.0;
     }
 
     var linkElements = svg.append("g")
@@ -83,8 +94,8 @@
       .selectAll("line")
       .data(links)
       .enter().append("line")
-      .attr("stroke-width", 1)
-      .attr("stroke", "rgba(50, 50, 50, 0.2)")
+      .attr("stroke-width", 2)
+      .attr("stroke", "rgba(50, 50, 50, 0.5)")
 
 
     var nodeElements = svg.append("g")
@@ -92,7 +103,8 @@
       .selectAll("circle")
       .data(nodes)
       .enter().append("circle")
-      .attr("r", 10)
+      .attr("r", getNodeStrength)
+      .attr("stroke-width", "2")
       .attr("fill", getNodeColor)
 
     var textElements = svg.append("g")
