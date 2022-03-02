@@ -53,20 +53,10 @@
     var width = 800;
     var height = 800;
     var strokeWidth = 1;
-    var zoom_handler = d3.zoom().on("zoom", zoom_actions);
+
 
     // var svg = d3.select('svg')
     // svg.attr('width', width).attr('height', height)
-
-    var svg = d3.select("#interaction").append("svg")
-      .attr("height", height)
-      .attr("width", width)
-      .attr("style", "outline: thick solid black")
-      .append("g")
-      .attr("transform", "translate(0,0)")
-      .call(zoom_handler)
-      .call(zoom_handler.transform, d3.zoomIdentity.translate(200, 150).scale(0.2));
-
 
     var linkForce = d3
       .forceLink()
@@ -94,6 +84,22 @@
       node.fx = null
       node.fy = null
     })
+
+    var svg = d3.select("#interaction").append("svg")
+      .attr("height", height)
+      .attr("width", width)
+      .attr("style", "outline: thick solid black")
+      .append("g")
+      .attr("transform", "translate(0,0)")
+    // .call(zoom_handler)
+    // .call(zoom_handler.transform, d3.zoomIdentity.translate(200, 150).scale(0.2));
+
+    var zoom_handler = d3.zoom().on("zoom", zoom_actions);
+    zoom_handler(svg);
+
+    function zoom_actions() {
+      g.attr("transform", d3.event.transform)
+    }
 
     // const draginteraction = d3.drag().on('drag', (event, node) => {
     //   node.fx = event.x; //fx& fy is used to fix new position of the nodes when dragged
@@ -153,9 +159,7 @@
 
     }
 
-    function zoom_actions() {
-      svg.attr("transform", d3.event.transform)
-    }
+
     // function getNodeColor(node) {
     //   if (node.level === 0) {
     //     return 'lightblack';
