@@ -32,40 +32,6 @@
     return link_data;
   };
 
-  //for hghlighting associated nodes and links when clicked on any node
-
-  function getNeighbors(node) {
-    return links.reduce(function (neighbors, link) {
-      if (link.target.id === node.id) {
-        neighbors.push(link.source.id)
-      } else if (link.source.id === node.id) {
-        neighbors.push(link.target.id)
-      }
-      return neighbors
-    },
-      [node.id]
-    )
-  }
-
-  function isNeighborLink(node, link) {
-    return link.target.id === node.id || link.source.id === node.id
-  }
-
-  function getClickedNodeColor(node, neighbors) {
-    if (Array.isArray(neighbors) && neighbors.indexOf(node.id) > -1) {
-      return node.level === 1 ? 'blue' : 'green'
-    }
-
-    return node.level === 1 ? 'red' : 'gray'
-  }
-
-  function getClickedLinkColor(node, link) {
-    return isNeighborLink(node, link) ? 'green' : '#E5E5E5'
-  }
-
-  function getClickedTextColor(node, neighbors) {
-    return Array.isArray(neighbors) && neighbors.indexOf(node.id) > -1 ? 'green' : 'black'
-  }
 
   d3.csv("./csv_data/node_data.csv", function (error, data) {
 
@@ -124,6 +90,42 @@
     //   simulation.alpha(1);
     //   simulation.restart();
     // });
+
+    //for hghlighting associated nodes and links when clicked on any node
+
+    function getNeighbors(node) {
+      return links.reduce(function (neighbors, link) {
+        if (link.target.id === node.id) {
+          neighbors.push(link.source.id)
+        } else if (link.source.id === node.id) {
+          neighbors.push(link.target.id)
+        }
+        return neighbors
+      },
+        [node.id]
+      )
+    }
+
+    function isNeighborLink(node, link) {
+      return link.target.id === node.id || link.source.id === node.id
+    }
+
+    function getClickedNodeColor(node, neighbors) {
+      if (Array.isArray(neighbors) && neighbors.indexOf(node.id) > -1) {
+        return node.level === 1 ? 'blue' : 'green'
+      }
+
+      return node.level === 1 ? 'red' : 'gray'
+    }
+
+    function getClickedLinkColor(node, link) {
+      return isNeighborLink(node, link) ? 'green' : '#E5E5E5'
+    }
+
+    function getClickedTextColor(node, neighbors) {
+      return Array.isArray(neighbors) && neighbors.indexOf(node.id) > -1 ? 'green' : 'black'
+    }
+
 
     function getNodeColor(node) {
       if (node.level === 0) {
